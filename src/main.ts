@@ -1,35 +1,35 @@
 import './style.scss';
 
 /* -------------------- types -------------------- */
-type CatJson = {
-  id: string;
-  url: string;   // final image url
-  tags?: string[];
-};
+type CatJson = { id: string; url: string; tags?: string[] };
 
 /* -------------------- constants -------------------- */
 const API = 'https://cataas.com';
 const DEFAULT_TOTAL = 15;
 const COUNTED_FLAG = 'counted';
 
+/* Fun fake profiles */
 const CAT_PROFILES = [
   { name: "Whiskers", fact: "Loves chasing laser pointers.", personality: "Playful" },
-  { name: "Mittens", fact: "Sleeps 16 hours a day.", personality: "Chill" },
-  { name: "Tiger", fact: "Enjoys climbing curtains.", personality: "Adventurous" },
-  { name: "Shadow", fact: "Hides in boxes.", personality: "Curious" },
-  { name: "Luna", fact: "Purrs loudly when happy.", personality: "Affectionate" },
+  { name: "Mittens",  fact: "Sleeps 16 hours a day.",        personality: "Chill"    },
+  { name: "Tiger",    fact: "Enjoys climbing curtains.",     personality: "Adventurous" },
+  { name: "Shadow",   fact: "Hides in boxes.",               personality: "Curious"  },
+  { name: "Luna",     fact: "Purrs loudly when happy.",      personality: "Affectionate" },
 ];
 
 /* -------------------- DOM refs -------------------- */
-const STACK    = document.getElementById('stack') as HTMLDivElement;
-const SUMMARY  = document.getElementById('summary') as HTMLElement;
-const LIKE_CNT = document.getElementById('like-count') as HTMLElement;
-const GRID     = document.getElementById('liked-grid') as HTMLElement;
-const BAR      = document.getElementById('progress-bar') as HTMLDivElement;
-const BTN_AGAIN= document.getElementById('btn-restart') as HTMLButtonElement;
+const STACK     = document.getElementById('stack') as HTMLDivElement;
+const SUMMARY   = document.getElementById('summary') as HTMLElement;
+const LIKE_CNT  = document.getElementById('like-count') as HTMLElement;
+const GRID      = document.getElementById('liked-grid') as HTMLElement;
+const BAR       = document.getElementById('progress-bar') as HTMLDivElement;
+const BTN_AGAIN = document.getElementById('btn-restart') as HTMLButtonElement;
+const LOADER    = document.getElementById('loading-screen') as HTMLDivElement;
 
-// src/main.ts
-const MEOW_SOUND = new Audio(`${import.meta.env.BASE_URL}meow.mp3`);
+/* Audio from /public (works locally + on Pages subpath) */
+const base = import.meta.env.BASE_URL || '/';
+const MEOW_SOUND = new Audio(`${base}meow.mp3`);
+
 /* -------------------- state -------------------- */
 let cats: CatJson[] = [];
 let liked: string[] = [];
@@ -39,22 +39,19 @@ let finished = false;
 
 /* -------------------- data -------------------- */
 async function fetchCat(): Promise<CatJson> {
-  const res = await fetch(`${API}/cat?json=true`, {
-    headers: { accept: 'application/json' },
-    cache: 'no-cache',
-  });
+  const res = await fetch(`${API}/cat?json=true`, { headers: { accept: 'application/json' }, cache: 'no-cache' });
   if (!res.ok) throw new Error('CATAAS request failed');
   const data = await res.json();
   return { id: data.id, url: `${API}/cat/${data.id}`, tags: data.tags ?? [] };
 }
 
 async function loadCats(n = DEFAULT_TOTAL) {
-  // show loading
-  document.getElementById('loading-screen')!.style.display = 'flex';
-  
+  // show loader
+  LOADER.style.display = 'flex';
+
   finished = false;
   SUMMARY.hidden = true;
-  STACK.style.display = 'none'; // hide cards for now
+  STACK.style.display = 'none';
   cats = [];
   liked = [];
   processed = 0;
@@ -63,7 +60,7 @@ async function loadCats(n = DEFAULT_TOTAL) {
   for (let i = 0; i < n; i++) {
     try {
       cats.push(await fetchCat());
-      await sleep(120);
+      await sleep(120); // be kind to free API
     } catch {
       cats.push({ id: `${Date.now()}_${i}`, url: `${API}/cat`, tags: [] });
     }
@@ -72,7 +69,7 @@ async function loadCats(n = DEFAULT_TOTAL) {
   totalCount = cats.length;
   processed = 0;
 
-  // preload images
+  // preload images for smooth swipes
   await Promise.all(
     cats.map(
       c =>
@@ -84,8 +81,7 @@ async function loadCats(n = DEFAULT_TOTAL) {
     ),
   );
 
-  // hide loading and show stack
-  document.getElementById('loading-screen')!.style.display = 'none';
+  LOADER.style.display = 'none';
   STACK.style.display = '';
   renderStack();
 }
@@ -104,7 +100,7 @@ function renderStack() {
     const tagline = document.createElement('div');
     tagline.className = 'card-tagline';
     const paw = document.createElement('img');
-    paw.src = new URL('./paw.png', import.meta.url).toString();
+    paw.src = `${base}paw.png`; // from public
     paw.alt = 'Paw';
     paw.className = 'paw-icon';
     const strong = document.createElement('strong');
@@ -122,7 +118,7 @@ function renderStack() {
     imgWrap.appendChild(img);
     card.appendChild(imgWrap);
 
-     // profile
+    // profile (fun)
     const profile = CAT_PROFILES[Math.floor(Math.random() * CAT_PROFILES.length)];
     const profileDiv = document.createElement('div');
     profileDiv.className = 'cat-profile';
@@ -142,7 +138,7 @@ function renderStack() {
     const nopeImg = document.createElement('img');
     nopeImg.className = 'btn-icon';
     nopeImg.alt = 'Dislike';
-    nopeImg.src = new URL('./dislike.png', import.meta.url).toString();
+    nopeImg.src = `${base}dislike.png`;
     btnNope.appendChild(nopeImg);
 
     const btnLike = document.createElement('button');
@@ -150,17 +146,15 @@ function renderStack() {
     const likeImg = document.createElement('img');
     likeImg.className = 'btn-icon';
     likeImg.alt = 'Like';
-    likeImg.src = new URL('./like.png', import.meta.url).toString();
+    likeImg.src = `${base}like.png`;
     btnLike.appendChild(likeImg);
 
-    // prevent drag interference
+    // protect drag from buttons
     [btnLike, btnNope].forEach(btn => {
       ['pointerdown', 'pointerup', 'pointermove'].forEach(ev =>
         btn.addEventListener(ev, e => e.stopPropagation())
       );
     });
-
-    // clicks
     btnNope.addEventListener('click', () => programmaticSwipe(false));
     btnLike.addEventListener('click', () => programmaticSwipe(true));
 
@@ -176,11 +170,11 @@ function renderStack() {
 function attachDrag(card: HTMLDivElement) {
   let sx = 0, sy = 0, dx = 0, dy = 0, dragging = false;
 
-  const isFromButtons = (t: EventTarget | null) =>
+  const fromButtons = (t: EventTarget | null) =>
     (t as HTMLElement | null)?.closest?.('.card-actions') != null;
 
   const onDown = (e: PointerEvent) => {
-    if (isFromButtons(e.target)) return; 
+    if (fromButtons(e.target)) return;
     dragging = true;
     card.setPointerCapture(e.pointerId);
     sx = e.clientX; sy = e.clientY;
@@ -193,26 +187,24 @@ function attachDrag(card: HTMLDivElement) {
     dx = e.clientX - sx; dy = e.clientY - sy;
     card.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 18}deg)`;
     card.style.boxShadow = `0 26px 60px rgba(0,0,0,${Math.min(0.55, Math.abs(dx)/280)})`;
-    if (dx > 20) card.classList.add('like'); else card.classList.remove('like');
+    if (dx >  20) card.classList.add('like'); else card.classList.remove('like');
     if (dx < -20) card.classList.add('pass'); else card.classList.remove('pass');
   };
 
   const finalize = (isLike: boolean) => {
-  card.classList.remove('moving');
-  const url = card.dataset.url;
+    card.classList.remove('moving');
+    const url = card.dataset.url;
+    if (isLike && url) liked.push(url);
 
-  if (isLike && url) liked.push(url);
+    if (isLike) {
+      MEOW_SOUND.currentTime = 0;
+      MEOW_SOUND.play().catch(() => {});
+      showConfetti();
+    }
 
-  // add effects on like
-  if (isLike) {
-    MEOW_SOUND.currentTime = 0;
-    MEOW_SOUND.play().catch(() => {}); 
-    showConfetti();
-  }
-
-  card.remove();
-  if (STACK.children.length === 0 || processed >= totalCount) showSummary();
-};
+    card.remove();
+    if (STACK.children.length === 0 || processed >= totalCount) showSummary();
+  };
 
   const onUp = () => {
     if (!dragging) return;
@@ -240,11 +232,10 @@ function attachDrag(card: HTMLDivElement) {
   card.addEventListener('pointerup', onUp);
 }
 
-/* count a swipe */
+/* count a swipe (avoid double-count) */
 function bumpProgress(card?: HTMLElement) {
   if (card && (card as any).dataset[COUNTED_FLAG] === '1') return;
   if (card) (card as any).dataset[COUNTED_FLAG] = '1';
-
   processed = Math.min(processed + 1, totalCount);
   updateProgress(totalCount ? (processed / totalCount) * 100 : 0);
 }
@@ -271,7 +262,7 @@ function programmaticSwipe(like: boolean) {
       if (STACK.children.length === 0 || processed >= totalCount) showSummary();
     }, { once: true });
 
-    setTimeout(() => {
+    setTimeout(() => { // failsafe
       if (!document.body.contains(top)) return;
       if (like && url) liked.push(url);
       top.remove();
@@ -282,18 +273,19 @@ function programmaticSwipe(like: boolean) {
 
 /* -------------------- confetti -------------------- */
 function showConfetti() {
-  const confetti = document.createElement('div');
-  confetti.className = 'confetti';
-  confetti.innerHTML = '🎉';
-  confetti.style.position = 'fixed';
-  confetti.style.left = '50%';
-  confetti.style.top = '55%';
-  confetti.style.fontSize = '5rem';
-  confetti.style.transform = 'translate(-50%, -50%)';
-  confetti.style.pointerEvents = 'none';
-  confetti.style.zIndex = '9999';
-  document.body.appendChild(confetti);
-  setTimeout(() => confetti.remove(), 1200);
+  const conf = document.createElement('div');
+  conf.textContent = '🎉';
+  Object.assign(conf.style, {
+    position: 'fixed',
+    left: '50%',
+    top: '55%',
+    fontSize: '4rem',
+    transform: 'translate(-50%, -50%)',
+    pointerEvents: 'none',
+    zIndex: '9999',
+  } as CSSStyleDeclaration);
+  document.body.appendChild(conf);
+  setTimeout(() => conf.remove(), 1200);
 }
 
 /* -------------------- summary -------------------- */
@@ -319,7 +311,6 @@ function showSummary() {
 function updateProgress(pct: number) {
   if (BAR) BAR.style.width = `${Math.max(0, Math.min(100, pct))}%`;
 }
-
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 /* -------------------- init -------------------- */
