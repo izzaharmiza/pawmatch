@@ -2,6 +2,6 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/paws-preferences/',
-  build: { outDir: 'docs' },
+  base: '/pawmatch/',    
+  build: { outDir: 'docs'} 
 });
