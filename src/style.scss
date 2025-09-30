@@ -18,8 +18,7 @@ body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--fg);
-  background: url('/background.png') center center / cover no-repeat fixed;
-}
+background: url('./assets/background.png') center center / cover no-repeat fixed;}
 
 a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
