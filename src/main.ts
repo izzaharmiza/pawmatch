@@ -27,7 +27,7 @@ const BTN_AGAIN = document.getElementById('btn-restart') as HTMLButtonElement;
 const LOADER    = document.getElementById('loading-screen') as HTMLDivElement;
 
 /* Audio from /public (works locally + on Pages subpath) */
-const base = import.meta.env.BASE_URL || '/';
+const base = import.meta.env.BASE_URL || '/pawmatch';
 const MEOW_SOUND = new Audio(`${base}meow.mp3`);
 
 /* -------------------- state -------------------- */

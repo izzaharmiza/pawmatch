@@ -18,9 +18,7 @@ body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--fg);
-  background: url('./assets/background.png') repeat-x bottom;
-  background-size: 300px auto;   /* adjust width of repeat */
-  background-color: #fff;        /* fallback */
+  background: url('/pawmatch/assets/background.png') repeat-x bottom;
 }
 a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
