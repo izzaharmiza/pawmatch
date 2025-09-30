@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Paws & Preferences</title>
+    <meta name="theme-color" content="#111" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <h1>🐾 Paws & Preferences</h1>
+        <p class="sub">Swipe right to like · left to pass</p>
+      </header>
+
+      <!-- progress -->
+      <div class="progress-wrap" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <main>
+        <!-- card stack -->
+        <div id="stack" aria-live="polite" aria-label="Cat cards"></div>
+
+        <!-- action buttons -->
+        <div class="actions" aria-label="Actions">
+          <button id="btn-dislike" class="btn btn-ghost" aria-label="Dislike">👎</button>
+          <button id="btn-like" class="btn btn-primary" aria-label="Like">👍</button>
+        </div>
+
+        <!-- summary -->
+        <section id="summary" hidden>
+          <h2>You liked <span id="like-count">0</span> cats</h2>
+          <div id="liked-grid" class="grid"></div>
+          <button id="btn-restart" class="btn btn-ghost">Try again</button>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <small>Photos from <a href="https://cataas.com" target="_blank" rel="noreferrer">CATAAS</a></small>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

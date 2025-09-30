@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PawMatch</title>
+    <meta name="theme-color" content="#111" />
+    <script type="module" crossorigin src="/paws-preferences/assets/index-CnDInsNZ.js"></script>
+    <link rel="stylesheet" crossorigin href="/paws-preferences/assets/index-WiZK9t46.css">
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <h1><img src="/paws-preferences/assets/logo-Dq3c169b.png" alt="Logo" class="header-logo"/>PawMatch</h1>
+        <p class="sub">Swipe Right to like · Left to Pass</p>
+      </header>
+
+  
+      <main>
+        <!-- wrap stack + actions -->
+          <div class="deck">
+          <!-- Loader -->
+          <div id="loading-screen" class="loader" aria-live="polite" aria-busy="true">
+            <img src="/paws-preferences/assets/loading-cat-D1V-7C6M.gif" alt="Loading cat" class="loading-gif" />
+          </div>
+
+          <!-- Card stack -->
+          <div id="stack" aria-live="polite" aria-label="Cat cards"></div>
+          <br>
+
+          <!-- progress line -->
+          <div class="progress-wrap card-progress">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+        </div>
+
+
+        <!-- summary -->
+        <section id="summary" hidden>
+          <h2>You liked <span id="like-count">0</span> cats</h2>
+          <div id="liked-grid" class="grid"></div>
+          <button id="btn-restart" class="btn btn-ghost "  >Try again</button>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <small>Photos from <a href="https://cataas.com" target="_blank" rel="noreferrer">CATAAS</a></small>
+      </footer>
+    </div>
+
+  </body>
+</html>
