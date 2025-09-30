@@ -6,38 +6,40 @@
     <title>PawMatch</title>
     <meta name="theme-color" content="#111" />
   </head>
+
   <body>
     <div id="app">
       <header class="topbar">
-        <h1><img src="/logo.png" alt="Logo" class="header-logo"/>PawMatch</h1>
+        <!-- use relative paths so they work under /pawmatch/ -->
+        <h1>
+          <img src="logo.png" alt="Logo" class="header-logo" />
+          PawMatch
+        </h1>
         <p class="sub">Swipe Right to like · Left to Pass</p>
       </header>
 
-  
       <main>
-        <!-- wrap stack + actions -->
-          <div class="deck">
+        <div class="deck">
           <!-- Loader -->
-          <div id="loading-screen" class="loader" aria-live="polite" aria-busy="true">
-            <img src="/loading-cat.gif" alt="Loading cat" class="loading-gif" />
+          <div id="loading-screen" class="loading-screen" aria-live="polite" aria-busy="true">
+            <img src="loading-cat.gif" alt="Loading cat" class="loading-gif" />
+            <p>Please Wait, Fetching Your Purrfect Matches</p>
           </div>
 
           <!-- Card stack -->
           <div id="stack" aria-live="polite" aria-label="Cat cards"></div>
-          <br>
 
-          <!-- progress line -->
+          <!-- progress -->
           <div class="progress-wrap card-progress">
             <div id="progress-bar" class="progress-bar"></div>
           </div>
         </div>
 
-
         <!-- summary -->
         <section id="summary" hidden>
           <h2>You liked <span id="like-count">0</span> cats</h2>
           <div id="liked-grid" class="grid"></div>
-          <button id="btn-restart" class="btn btn-ghost "  >Try again</button>
+          <button id="btn-restart" class="btn btn-ghost">Try again</button>
         </section>
       </main>
 
@@ -46,6 +48,7 @@
       </footer>
     </div>
 
+    <!-- keep this; Vite replaces it in the built docs/index.html -->
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

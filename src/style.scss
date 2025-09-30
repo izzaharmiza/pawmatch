@@ -18,8 +18,10 @@ body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--fg);
-background: url('./assets/background.png') center center / cover no-repeat fixed;}
-
+  background: url('./assets/background.png') repeat-x bottom;
+  background-size: 300px auto;   /* adjust width of repeat */
+  background-color: #fff;        /* fallback */
+}
 a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
